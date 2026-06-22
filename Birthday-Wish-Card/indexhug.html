@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Do You Love Me?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2589/2589175.png" type="image/png">
+  <style>
+    body {
+      background-color: #ffe6f0;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #mainContainer, #resultContainer, #heartEffectContainer {
+      padding-top: 60px;
+    }
+
+    #mainImage {
+      width: 160px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 10px;
+      padding: 12px 30px;
+      font-size: 22px;
+      background-color: #ff5c8a;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    #resultContainer, #heartEffectContainer {
+      display: none;
+    }
+
+    #resultImage {
+      width: 200px;
+    }
+
+    .heart {
+      position: fixed;
+      color: red;
+      font-size: 24px;
+      animation: float 5s linear forwards;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-600px) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    #loadingText {
+      font-size: 28px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    #typeEffect {
+      font-size: 18px;
+      color: #cc0066;
+      font-style: italic;
+      margin: 10px;
+      min-height: 24px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #ffb3cc;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #660033;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 20px;
+      padding-right: 20px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    #instaBtn {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    #instaBtn img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .follow-msg {
+      font-size: 14px;
+      font-weight: normal;
+      margin-left: 10px;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      #mainImage {
+        width: 100px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+        max-width: 120px;
+        white-space: nowrap;
+      }
+
+      #loadingText {
+        font-size: 20px;
+        padding: 0 10px;
+      }
+
+      h2 {
+        font-size: 22px;
+        padding: 0 10px;
+      }
+
+      #resultImage {
+        width: 130px;
+      }
+
+      #typeEffect {
+        font-size: 14px;
+        padding: 0 10px;
+      }
+
+      #mainContainer, #resultContainer, #heartEffectContainer {
+        padding-top: 40px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      footer {
+        font-size: 14px;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+        padding: 12px 15px;
+      }
+
+      footer > div {
+        justify-content: center;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+      }
+
+      .follow-msg {
+        margin-left: 0;
+        margin-bottom: 5px;
+        font-size: 12px;
+      }
+
+      #instaBtn img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    /* ===== Footer Control Area ===== */
+    .footer-top {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 1px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      color: #555;
+      margin-left: 20px;
+    }
+
+    .footer-instagram-icon {
+      width: 30px;
+      height: 30px;
+      padding-top: 5px;
+    }
+
+    .footer-bottom {
+      font-size: 13px;
+      color: #333;
+      max-width: 100%;
+      word-wrap: break-word;
+      text-align: left;
+
+      /* 👇 Desktop Position Control (manually adjust this) */
+      margin-right: 80px; /* 👈 Move 10px from left */
+      /* margin-right: 10px; */ /* 👈 OR use this instead to move from right */
+    }
+
+    @media (max-width: 600px) {
+      .footer-top, 
+      .footer-bottom {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      .footer-instagram-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      .footer-text {
+        font-size: 12px;
+      }
+
+      .footer-bottom {
+        font-size: 12px;
+        margin: 0 auto !important;   /* 👈 Center for mobile */
+        text-align: center !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Main Page -->
+<div id="mainContainer">
+  <img src="bubududu-panda.gif" id="mainImage" alt="Panda Image">
+  <h2>Do you love me?🫣</h2>
+  <p id="typeEffect"></p>
+  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+</div>
+
+<!-- Animation Page -->
+<div id="heartEffectContainer">
+  <h2 id="loadingText">Processing your feelings.. 0% ❤️</h2>
+</div>
+
+<!-- Final Result -->
+<div id="resultContainer">
+  <h2>I knew it 😍!</h2>
+  <img src="miss-you-hug.gif" id="resultImage" alt="Hug Image">
+</div>
+
+<!-- Sounds -->
+<audio id="loveSound" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
+<audio id="noSound" src="https://www.fesliyanstudios.com/play-mp3/6678" preload="auto"></audio>
+
+<!-- YOUR EXISTING CODE ABOVE REMAINS UNCHANGED -->
+
+<!-- Footer -->
+<footer>
+  <!-- Line 1 -->
+  <div class="footer-top">
+    <span class="footer-text">
+      For Source Code, Follow my Instagram & DM me
+    </span>
+    <button onclick="window.open('https://www.instagram.com/the_pirate_773/', '_blank')" 
+      style="background: transparent; border: none; cursor: pointer; padding: 0;">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" 
+        class="footer-instagram-icon">
+    </button>
+  </div>
+
+  <!-- Line 2 -->
+  <div class="footer-bottom">
+    © 2026  <strong>LoveFunCode</strong> | Developed by
+    <a href="https://github.com/sanjidkabir773-lab" target="_blank" 
+       style="color: #e91e63; text-decoration: none; font-weight: bold;">
+      Maaz Deen Sanjid Kabir
+    </a>
+  </div>
+</footer>
+
+<style>
+  @media (max-width: 600px) {
+    .footer-top,
+    .footer-bottom {
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: center !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 6px;
+    }
+
+    .footer-text {
+      font-size: 14px !important;
+      white-space: nowrap;
+    }
+
+    .footer-bottom {
+      font-size: 14px !important;
+      white-space: nowrap;
+      margin: 0 auto !important;
+      padding: 0 10px;
+    }
+
+    .footer-instagram-icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+</style>
+
+
+<script>
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const mainContainer = document.getElementById("mainContainer");
+  const heartEffectContainer = document.getElementById("heartEffectContainer");
+  const resultContainer = document.getElementById("resultContainer");
+  const loveSound = document.getElementById("loveSound");
+  const noSound = document.getElementById("noSound");
+  const loadingText = document.getElementById("loadingText");
+
+  noBtn.addEventListener("mouseenter", () => {
+    noSound.currentTime = 0;
+    noSound.play();
+  });
+
+  noBtn.addEventListener("mouseover", () => {
+    const padding = 20;
+    const footerHeight = document.querySelector('footer').offsetHeight + 20;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - footerHeight - padding;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = `${x}px`;
+    noBtn.style.top = `${y}px`;
+  });
+
+  yesBtn.addEventListener("click", () => {
+    mainContainer.style.display = "none";
+    heartEffectContainer.style.display = "block";
+    loveSound.play();
+
+    let percent = 0;
+    const duration = 3000;
+    const intervalTime = duration / 100;
+
+    const heartInterval = setInterval(() => {
+      percent++;
+      loadingText.innerHTML = `Processing your feelings.. ${percent}% ❤️`;
+      createHeart();
+
+      if (percent >= 100) {
+        clearInterval(heartInterval);
+        heartEffectContainer.style.display = "none";
+        resultContainer.style.display = "block";
+      }
+    }, intervalTime);
+  });
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerText = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.top = "100vh";
+    heart.style.fontSize = Math.random() * 20 + 20 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }
+
+  const textElement = document.getElementById("typeEffect");
+  const messages = [
+    "Don't even try to escape", "Click 'No' if you're heartless", "Bet you can’t catch the 'No'",
+    "Only the brave dare to say 'No'", "Wanna play hard to get? Try hitting 'No'", 
+    "Click 'No' if you don’t believe in love", "Careful 'No' is slippery",
+    "Only legends catch the 'No' button", "Try to say 'No' if you can",
+    "If you don’t love me prove it — click 'No'", "Think you're cold? Hit 'No' and prove it",
+    "Clicking 'No' means no cuddles for you", "Brave enough to break hearts? Try 'No'",
+    "Love is just one click away — or not", "If 'No' is your choice, prepare for sadness",
+    "Clicking 'No' ends the fairytale", "Say 'No' and face the consequences",
+    "Break my heart — go on, click 'No'", "Prove you're tough — click 'No' if you dare",
+    "You really gonna say 'No' to this face?", "No hugs if you click 'No'",
+    "Don’t play games unless you click 'No'", "'No' leads to eternal loneliness",
+    "Clicking 'No' disables all the fun", "Hit 'No' and make a panda cry",
+    "Feeling heartless today? Tap 'No'", "Only villains click 'No'", 
+    "Skip the 'No' — save a soul", "'No' means deleting all your cookies", 
+    "Click 'No' and lose karma points"
+  ];
+
+  let messageIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function typeLoop() {
+    const currentText = messages[messageIndex];
+    if (isDeleting) {
+      charIndex--;
+      textElement.textContent = currentText.substring(0, charIndex);
+    } else {
+      charIndex++;
+      textElement.textContent = currentText.substring(0, charIndex);
+    }
+
+    if (!isDeleting && charIndex === currentText.length) {
+      setTimeout(() => isDeleting = true, 1000);
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      messageIndex = (messageIndex + 1) % messages.length;
+    }
+
+    setTimeout(typeLoop, isDeleting ? 30 : 60);
+  }
+
+  typeLoop();
+</script>
+
+</body>
+</html>

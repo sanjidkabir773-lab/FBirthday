@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candle Animation</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <div class="audio-player">
+        <button id="music-toggle" class="music-btn">
+            <span class="icon">♪</span>
+            <span class="music-text">Play Music</span>
+        </button>
+        <audio id="bg-music" loop>
+            <source src="./b-home-song.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div id="intro-screen" class="screen-overlay">
+        <div class="intro-box">
+            <h1 class="bounce-text">Wanna cake for your birthday gift?</h1>
+            <button id="start-btn" class="cute-btn">Click Here! 🎁</button>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="screen-overlay hidden">
+        <div class="loader-container">
+            <div class="cute-loader">🍰</div>
+            <p class="loading-text">Making something sweet for you...</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <div id="heart-container"></div>
+        <div class="wrapper">
+            <div class="big-cake">
+                <div class="cake-cherry"></div>
+                <div class="cake-layer layer-top"></div>
+                <div class="cake-layer layer-bottom"></div>
+            </div>
+            <div class="candles">
+                <div class="light__wave"></div>
+                <div class="candle1">
+                    <div class="candle1__body">
+                        <div class="candle1__eyes">
+                            <span class="candle1__eyes-one"></span>
+                            <span class="candle1__eyes-two"></span>
+                        </div>
+                        <div class="candle1__mouth"></div>
+                    </div>
+                    <div class="candle1__stick"></div>
+                </div>
+                <div class="candle2">
+                    <div class="candle2__body">
+                        <div class="candle2__eyes">
+                            <div class="candle2__eyes-one"></div>
+                            <div class="candle2__eyes-two"></div>
+                        </div>
+                    </div>
+                    <div class="candle2__stick"></div>
+                </div>
+                <div class="candle2__fire"></div>
+                <div class="sparkles-one"></div>
+                <div class="sparkles-two"></div>
+                <div class="candle__smoke-one"></div>
+                <div class="candle__smoke-two"></div>
+            </div>
+            <div class="floor"></div>
+        </div>
+    </div>
+
+    <script>
+      const startBtn = document.getElementById('start-btn');
+      const bgMusic = document.getElementById('bg-music');
+      const introScreen = document.getElementById('intro-screen');
+      const loadingScreen = document.getElementById('loading-screen');
+      // আইডি মিসম্যাচ ঠিক করা হয়েছে (main-content)[cite: 3]
+      const mainContent = document.getElementById('main-content'); 
+      
+      startBtn.addEventListener('click', () => {
+        bgMusic.play().catch(error => console.log("Audio playback delayed:", error));
+        introScreen.classList.add('hidden');
+        loadingScreen.classList.remove('hidden');
+        setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+          mainContent.classList.remove('hidden');
+          setInterval(createHeart, 300);
+        }, 3000);
+      });
+
+      function createHeart() {
+        const container = document.getElementById('heart-container');
+        if(!container) return;
+        const heart = document.createElement('div');
+        heart.classList.add('floating-heart');
+        heart.innerText = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's'; 
+        heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+        container.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 5000);
+      }
+    </script>
+</body>
+</html>

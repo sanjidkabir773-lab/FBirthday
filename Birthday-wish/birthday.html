@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;width:100vw;height:100vh}
+canvas{position:fixed;top:0;left:0;pointer-events:none}
+#bg{z-index:0}
+#tree{z-index:1}
+#initial{
+  position:fixed;bottom:24%;left:50%;transform:translateX(-50%);
+  text-align:center;z-index:10;cursor:pointer;transition:opacity .7s ease;
+  font-family:'Dancing Script',cursive;
+}
+#initial .heart{
+  font-size:clamp(70px,9vw,110px);display:inline-block;
+  animation:pulse 1.1s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px #ff69b4) drop-shadow(0 0 30px #ff1493) drop-shadow(0 0 55px #c71585);
+}
+#initial .label{
+  margin-top:6px;font-size:clamp(22px,2.6vw,32px);
+  color:#ffb6c1;letter-spacing:2px;line-height:1.75;
+  text-shadow:0 0 10px #ff69b4,0 0 22px #ff1493;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+#message{
+  position:fixed;top:50%;left:4%;transform:translateY(-50%);
+  z-index:10;opacity:0;transition:opacity .55s;
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(18px,2.3vw,30px);
+  line-height:2;pointer-events:none;color:#fff;
+  padding:18px 26px;
+  max-width:42%;
+  background:rgba(15,0,12,.42);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  border:1px solid rgba(255,105,180,.22);
+  border-radius:14px;
+  box-shadow:0 0 30px rgba(255,20,147,.12);
+}
+#message span{
+  display:block;
+  text-shadow:0 0 6px #ff69b4,0 0 14px #ff1493,0 2px 6px rgba(0,0,0,.7);
+}
+@keyframes blink{50%{border-color:transparent}}
+
+@media (max-width:780px){
+  #initial{bottom:30%}
+  #message{
+    top:auto;bottom:5%;left:50%;
+    transform:translateX(-50%);
+    max-width:88%;
+    text-align:center;
+    font-size:clamp(15px,4.2vw,22px);
+    padding:14px 20px;
+  }
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<canvas id="tree"></canvas>
+<div id="initial" onclick="startAnimation()">
+  <div class="heart">💕</div>
+  <div class="label">Click Me :)<br>Birthday Queen !</div>
+</div>
+<div id="message"></div>
+<script>
+/*
+   a little birthday card, just for you <3
+   click the heart -> watch what happens
+   ~ made with love
+*/
+
+// grab both canvases. bg = floating hearts, tree = everything else
+const bgC=document.getElementById('bg'), bgX=bgC.getContext('2d');
+const tC =document.getElementById('tree'),tX =tC.getContext('2d');
+let W, H;
+function resize(){
+  W = bgC.width = tC.width = innerWidth;
+  H = bgC.height = tC.height = innerHeight;
+  // canvases got cleared by the resize, so we have to redraw the cached layers
+  treeBaked = null; leavesBaked = null;
+  if(treeDone)   bakeTree();
+  if(leavesDone) bakeLeaves();
+}
+window.addEventListener('resize', resize);
+
+// the messages i want her to read, one line at a time
+const LINES=[
+  "Hey you 💕",
+  "Happy Birthday 🎂",
+  "May God bless you 😇",
+  "And give u many happiness 💕",
+  "Just saying... you're pretty awesome 😍",
+  "Hope u have a great day today 💕"
+];
+const COLORS=['#ff69b4','#ff1493','#e0115f','#ff4d6d','#ff85a1','#ffb3c6','#ffc2d4','#d63384','#c71585','#ff6b9d','#ffa07a'];
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+
+// state goes here
+let branches = [], leaves = [];
+let treeDone = false, leavesDone = false, clickTime = null;
+let treeBaked = null, leavesBaked = null;
+
+// the intro: drop -> roll -> settle -> grow
+let phase = 'idle', phaseStart = 0;
+const heart = { x:0, y:0, rot:0, scale:1, alpha:1, size:50 };
+let trailPts = [], trailAlpha = 1;
+let groundY = 0, dropFromY = 0, rollFromX = 0, rollToX = 0;
+let treeX = 0, treeY = 0;
+
+// easing functions, copied from easings.net
+const easeInQuad  = t => t * t;
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+// reusable heart shape (two bezier curves). centered roughly on (cx, cy)
+function heartPath(c,cx,cy,s){
+  c.beginPath();
+  c.moveTo(cx,cy);
+  c.bezierCurveTo(cx-s*.5,cy-s*.5, cx-s,cy+s*.3, cx,cy+s);
+  c.bezierCurveTo(cx+s,cy+s*.3,  cx+s*.5,cy-s*.5, cx,cy);
+}
+
+// little hearts that drift up in the background.
+// no shadowBlur per-particle here, that murders performance. using 'lighter' instead.
+const particles=[];
+function mkP(randY){
+  return{
+    x:Math.random()*W,
+    y:randY?Math.random()*H:H+8,
+    vy:.25+Math.random()*.55,
+    vx:(Math.random()-.5)*.35,
+    r:2+Math.random()*4.5,
+    a:0, ma:.22+Math.random()*.45,
+    ph:Math.random()*Math.PI*2,
+    isH:Math.random()>.18,
+    col:rand(COLORS)
+  };
+}
+function initParticles(){
+  particles.length=0;
+  const N=Math.min(200,Math.max(120,Math.round(W*H/9500)));
+  for(let i=0;i<N;i++) particles.push(mkP(true));
+}
+function drawAmbient(ts){
+  bgX.clearRect(0,0,W,H);
+  bgX.globalCompositeOperation='lighter';
+  for(const p of particles){
+    p.a=Math.min(p.ma,p.a+.006);
+    p.y-=p.vy;
+    p.x+=p.vx+Math.sin(ts*.0007+p.ph)*.25;
+    if(p.y<-12) Object.assign(p,mkP(false));
+    bgX.globalAlpha=p.a;
+    bgX.fillStyle=p.col;
+    if(p.isH){
+      heartPath(bgX,p.x,p.y,p.r);
+      bgX.fill();
+    } else {
+      bgX.beginPath();
+      bgX.arc(p.x,p.y,p.r*.55,0,Math.PI*2);
+      bgX.fill();
+    }
+  }
+  bgX.globalCompositeOperation='source-over';
+  bgX.globalAlpha=1;
+}
+
+// runs the phase machine + draws the falling/rolling heart
+function updatePhases(ts){
+  if(phase==='drop'){
+    const dur=720;
+    const t=Math.min(1,(ts-phaseStart)/dur);
+    const e=easeInQuad(t);
+    heart.y=dropFromY+(groundY-dropFromY)*e;
+    heart.rot=e*0.35*(rollToX<rollFromX?-1:1);
+    trailPts.push({x:heart.x,y:heart.y});
+    if(t>=1){ phase='roll'; phaseStart=ts; }
+  } else if(phase==='roll'){
+    const dur=1150;
+    const t=Math.min(1,(ts-phaseStart)/dur);
+    const e=easeOutCubic(t);
+    heart.x=rollFromX+(rollToX-rollFromX)*e;
+    // little hops as it rolls. amplitude shrinks over time so it settles
+    const amp = 14 * Math.pow(1-t, 1.6);
+    heart.y = groundY - Math.abs(Math.sin(t * Math.PI * 4)) * amp;
+    // spin it like a wheel - rotation tied to distance traveled
+    const dist = heart.x - rollFromX;
+    heart.rot=dist/heart.size*0.55;
+    trailPts.push({x:heart.x,y:heart.y});
+    if(t>=1){ phase='settle'; phaseStart=ts; }
+  } else if(phase==='settle'){
+    const dur=600;
+    const t=Math.min(1,(ts-phaseStart)/dur);
+    heart.x=rollToX;
+    heart.y=groundY;
+    heart.alpha=1-t;
+    heart.scale=1+t*0.45;
+    trailAlpha=1-t*0.9;
+    if(clickTime===null){
+      clickTime=ts;
+      buildHeartTree(treeX,treeY);
+    }
+    if(t>=1){ phase='grow'; heart.alpha=0; trailAlpha=0; }
+  }
+}
+
+// the glowing line the heart leaves behind as it rolls
+function drawTrail(){
+  if(trailPts.length < 2 || trailAlpha <= 0) return;
+  tX.save();
+  tX.lineCap = 'round'; tX.lineJoin = 'round';
+  // fat soft glow underneath
+  tX.strokeStyle = '#ff1493';
+  tX.lineWidth   = 10;
+  tX.globalAlpha = trailAlpha * 0.22;
+  tX.shadowBlur  = 22; tX.shadowColor = '#ff1493';
+  tX.beginPath();
+  tX.moveTo(trailPts[0].x, trailPts[0].y);
+  for(let i=1;i<trailPts.length;i++) tX.lineTo(trailPts[i].x, trailPts[i].y);
+  tX.stroke();
+  // sharp light-pink line on top
+  tX.globalAlpha=trailAlpha*0.85;
+  tX.strokeStyle='#ffc2d4';
+  tX.lineWidth=2.6;
+  tX.shadowBlur=8; tX.shadowColor='#ff69b4';
+  tX.beginPath();
+  tX.moveTo(trailPts[0].x,trailPts[0].y);
+  for(let i=1;i<trailPts.length;i++) tX.lineTo(trailPts[i].x,trailPts[i].y);
+  tX.stroke();
+  tX.restore();
+  tX.shadowBlur=0;
+}
+
+// the big animated heart that rolls in. drawn twice: glow + brighter core
+function drawHeartIcon(){
+  if(heart.alpha <= 0) return;
+  tX.save();
+  tX.translate(heart.x, heart.y);
+  tX.rotate(heart.rot);
+  tX.scale(heart.scale, heart.scale);
+  tX.globalAlpha = heart.alpha;
+  // outer glowing heart
+  tX.shadowBlur=30; tX.shadowColor='#ff1493';
+  tX.fillStyle='#ff1493';
+  heartPath(tX,0,-heart.size*0.4,heart.size);
+  tX.fill();
+  // brighter heart on top
+  tX.shadowBlur=12; tX.shadowColor='#ff69b4';
+  tX.fillStyle='#ff69b4';
+  heartPath(tX,0,-heart.size*0.4+2,heart.size*0.78);
+  tX.fill();
+  tX.restore();
+  tX.shadowBlur=0;
+}
+
+// the tree itself. spent a while on this - the trick is using the classic
+// heart parametric curve as the spine of the tree:
+//    x = 16·sin³t
+//    y = 13·cos t − 5·cos2t − 2·cos3t − cos4t
+// flipped y for canvas. bottom point lives at t=π, top dip at t=0,
+// lobe peaks at t=±π/2.  two spines trace this outline -> instant heart shape.
+function heartPoint(t){
+  const hx=16*Math.pow(Math.sin(t),3);
+  const hy=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+  return{hx,hy}; // hy: −5 (top dip) … +17 (bottom)
+}
+
+function addSeg(x,y,ex,ey,w,delay){
+  branches.push({x,y,ex,ey,w,delay});
+}
+
+function buildHeartTree(rootX,rootY){
+  branches = [];
+  const sc = Math.min(W,H) * .024;     // overall heart size
+  const stemH = H * .07;
+  const stemTopY = rootY - stemH;
+
+  // tiny stem at the bottom
+  addSeg(rootX, rootY, rootX, stemTopY, 11, 0);
+
+  // two spines tracing the outline of the heart
+  const N = 26;
+  for(const dir of [+1, -1]){
+    let pX = rootX, pY = stemTopY, pW = 10;
+    let delay = 180;
+    for(let i=1; i<=N; i++){
+      const t = Math.PI + dir * Math.PI * i / N;   // π→2π for one side, π→0 for the other
+      const { hx, hy } = heartPoint(t);
+      const cx = rootX + hx * sc;
+      const cy = stemTopY - (17 - hy) * sc;
+      const w  = Math.max(1.6, pW * .945);
+      addSeg(pX, pY, cx, cy, w, delay);
+
+      // every other spine point, sprout a little branch inward
+      if(i>2 && i<N-1 && i%2===0){
+        const heartCY = stemTopY - 11*sc;     // approx middle of the heart
+        const ang = Math.atan2(heartCY-cy, rootX-cx) + (Math.random()-.5)*.5;
+        sproutInner(cx,cy, ang, sc*(2.4+Math.random()*1.8), w*.55, delay+40);
+      }
+      pX=cx; pY=cy; pW=w;
+      delay+=46;
+    }
+  }
+}
+
+function sproutInner(x,y,ang,len,w,delay){
+  if(len<6||w<.7) return;
+  const ex=x+Math.cos(ang)*len, ey=y+Math.sin(ang)*len;
+  addSeg(x,y,ex,ey,w,delay);
+  const sp=.38+Math.random()*.32;
+  const sh=.6+Math.random()*.15;
+  if(Math.random()>.25) sproutInner(ex,ey,ang-sp,len*sh,w*.66,delay+70);
+  if(Math.random()>.25) sproutInner(ex,ey,ang+sp,len*sh,w*.66,delay+70);
+}
+
+// each branch is drawn twice: a wide soft glow then a sharp pink core
+function drawBranch(c,x1,y1,x2,y2,w){
+  c.lineCap='round';
+  // outer glow
+  c.strokeStyle='#ff1493';
+  c.lineWidth=Math.max(1,w*.55)+3;
+  c.globalAlpha=.16;
+  c.shadowBlur=14; c.shadowColor='#ff69b4';
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+  // crisp pink core
+  c.globalAlpha=1;
+  c.shadowBlur=5;
+  c.strokeStyle='#ffc2d4';
+  c.lineWidth=Math.max(1,w*.55);
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+  c.shadowBlur=0;
+}
+
+function bakeTree(){
+  treeBaked=document.createElement('canvas');
+  treeBaked.width=W; treeBaked.height=H;
+  const x=treeBaked.getContext('2d');
+  for(const b of branches) drawBranch(x,b.x,b.y,b.ex,b.ey,b.w);
+}
+
+// the leaves (tiny hearts) that bloom over the tree once it's grown
+function spawnLeaves(rootX,rootY){
+  const sc=Math.min(W,H)*.024;
+  const stemH=H*.07;
+  const heartCX=rootX;
+  const heartCY=(rootY-stemH)-11*sc;     // vertical center of heart
+  const Rx=16*sc*1.05;
+  const Ry=11*sc*1.05;
+  // scatter ~460 hearts inside the heart shape
+  for(let i=0;i<460;i++){
+    const t=Math.random()*Math.PI*2;
+    const { hx, hy } = heartPoint(t);
+    const sca=.18+Math.random()*.85;
+    leaves.push({
+      x:heartCX+(hx/16)*Rx*sca+(Math.random()-.5)*22,
+      y:heartCY+((hy-6)/11)*Ry*sca+(Math.random()-.5)*22,
+      s:4+Math.random()*8,
+      col:rand(COLORS),
+      d:performance.now()+i*1.6+Math.random()*420
+    });
+  }
+  // ~140 more hugging the outline so the silhouette pops
+  for(let i=0;i<140;i++){
+    const t=Math.random()*Math.PI*2;
+    const { hx, hy } = heartPoint(t);
+    leaves.push({
+      x:heartCX+(hx/16)*Rx+(Math.random()-.5)*14,
+      y:heartCY+((hy-6)/11)*Ry+(Math.random()-.5)*14,
+      s:3+Math.random()*5,
+      col:rand(COLORS),
+      d:performance.now()+i*2+Math.random()*500
+    });
+  }
+}
+
+// once all leaves have bloomed, bake them into one cached canvas.
+// after this we just blit one image per frame instead of redrawing 600 hearts.
+function bakeLeaves(){
+  leavesBaked=document.createElement('canvas');
+  leavesBaked.width=W; leavesBaked.height=H;
+  const x=leavesBaked.getContext('2d');
+  // additive blend so overlapping hearts brighten naturally
+  x.globalCompositeOperation='lighter';
+  for(const h of leaves){
+    x.fillStyle=h.col;
+    heartPath(x,h.x,h.y,h.s);
+    x.fill();
+  }
+  // sprinkle a soft glow on a few of them
+  x.globalCompositeOperation='source-over';
+  x.shadowBlur=10;
+  for(const h of leaves){
+    if(Math.random()>.7){
+      x.shadowColor=h.col;
+      x.fillStyle=h.col;
+      heartPath(x,h.x,h.y,h.s*.6);
+      x.fill();
+    }
+  }
+  x.shadowBlur=0;
+}
+
+// the main loop. runs forever, draws each layer in order.
+function animate(ts){
+  drawAmbient(ts);
+  tX.clearRect(0,0,W,H);
+
+  if(phase!=='idle') updatePhases(ts);
+
+  // tree (only kicks in after the heart settles)
+  if(clickTime!==null){
+    const el=ts-clickTime;
+    if(treeBaked){
+      tX.drawImage(treeBaked,0,0);
+    } else {
+      let bdone=true;
+      tX.save();
+      for(const b of branches){
+        const t=Math.min(1,Math.max(0,(el-b.delay)/240));
+        if(t<1) bdone=false;
+        if(t<=0) continue;
+        const ex=b.x+(b.ex-b.x)*t;
+        const ey=b.y+(b.ey-b.y)*t;
+        drawBranch(tX,b.x,b.y,ex,ey,b.w);
+      }
+      tX.restore();
+      if(bdone && branches.length && !treeDone){
+        treeDone=true;
+        bakeTree();
+        spawnLeaves(treeX,treeY);
+      }
+    }
+    // leaves
+    if(leavesBaked){
+      tX.drawImage(leavesBaked,0,0);
+    } else if(treeDone){
+      let ldone=true;
+      tX.globalCompositeOperation='lighter';
+      for(const h of leaves){
+        const t=Math.min(1,Math.max(0,(ts-h.d)/170));
+        if(t<1) ldone=false;
+        if(t<=0) continue;
+        tX.globalAlpha=t;
+        tX.fillStyle=h.col;
+        heartPath(tX,h.x,h.y,h.s*t);
+        tX.fill();
+      }
+      tX.globalCompositeOperation='source-over';
+      tX.globalAlpha=1;
+      if(ldone && leaves.length && !leavesDone){
+        leavesDone=true;
+        bakeLeaves();
+        startTypewriter();
+      }
+    }
+  }
+
+  // glowing trail + animated heart go on top, only during the intro phases
+  if(phase==='drop'||phase==='roll'||phase==='settle'){
+    drawTrail();
+    drawHeartIcon();
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// click handler. picks up where the html heart was and starts the drop
+function startAnimation(){
+  if(phase !== 'idle') return;   // ignore double-clicks
+
+  const el = document.getElementById('initial');
+  const heartEl = el.querySelector('.heart');
+  const r = heartEl.getBoundingClientRect();
+
+  // hand-off: canvas heart starts exactly where the html one was
+  heart.x = r.left + r.width/2;
+  heart.y = r.top  + r.height/2;
+  heart.size = Math.max(38, Math.min(64, r.width * 0.55));
+  heart.alpha = 1; heart.rot = 0; heart.scale = 1;
+
+  el.style.opacity = '0';
+  setTimeout(() => el.style.display = 'none', 300);
+
+  groundY   = H * 0.86;
+  dropFromY = heart.y;
+  rollFromX = heart.x;
+  // where the tree ends up: rolls right on desktop, centered on mobile
+  rollToX = (W < 780) ? W * 0.5 : W * 0.70;
+  treeX = rollToX; treeY = groundY;
+
+  trailPts = [{ x: heart.x, y: heart.y }];
+  trailAlpha = 1;
+  phase = 'drop';
+  phaseStart = performance.now();
+}
+
+// types out the messages one character at a time, with a blinking cursor
+function startTypewriter(){
+  const msg=document.getElementById('message');
+  msg.style.opacity='1';
+  let idx=0;
+  function next(){
+    if(idx>=LINES.length) return;
+    const sp=document.createElement('span');
+    sp.style.borderRight='2px solid #ff69b4';
+    sp.style.animation='blink .65s step-end infinite';
+    msg.appendChild(sp);
+    const txt=LINES[idx]; let ci=0;
+    const iv=setInterval(()=>{
+      if(ci<=txt.length){ sp.textContent=txt.substring(0,ci); ci++; }
+      else{
+        clearInterval(iv);
+        sp.style.borderRight='none';
+        sp.style.animation='none';
+        msg.appendChild(document.createElement('br'));
+        idx++;
+        setTimeout(next,500);
+      }
+    },65);
+  }
+  next();
+}
+
+// boot
+resize();
+initParticles();
+window.addEventListener('resize', () => { initParticles(); });
+requestAnimationFrame(animate);
+
+// happy birthday <3
+</script>
+</body>
+</html>
