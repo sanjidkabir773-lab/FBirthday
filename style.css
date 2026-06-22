@@ -19,165 +19,89 @@ body {
 }
 
 
-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background-color: #ffb3cc;
-      padding: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #660033;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-left: 20px;
-      padding-right: 20px;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
+/* --- Popup Structure --- */
+#popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
 
-    #instaBtn {
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
+#popupBox {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333; /* এই লাইনটি যোগ করা হয়েছে লেখাগুলোকে স্পষ্টভাবে দেখানোর জন্য */
+}
 
-    #instaBtn img {
-      width: 28px;
-      height: 28px;
-    }
+/* এই অংশটুকু যোগ করুন যাতে h2 এবং p লেখাগুলো স্পষ্টভাবে দেখা যায় */
+#popupBox h2 {
+    color: #333; 
+    margin-top: 0; 
+    margin-bottom: 10px;
+}
 
-    .follow-msg {
-      font-size: 14px;
-      font-weight: normal;
-      margin-left: 10px;
-      font-style: italic;
-    }
+#popupBox p {
+    color: #666;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
 
-    @media (max-width: 600px) {
-      #mainImage {
-        width: 100px;
-      }
+/* --- Button --- */
+button {
+    padding: 10px 25px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #ff4081;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
 
-      button {
-        font-size: 16px;
-        padding: 10px 20px;
-        max-width: 120px;
-        white-space: nowrap;
-      }
+/* --- Footer text styles --- */
+.footer-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 16px;
+    color: #ff4081;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
 
-      #loadingText {
-        font-size: 20px;
-        padding: 0 10px;
-      }
+.footer-bottom {
+    font-family: 'Dancing Script', cursive;
+    font-size: 14px;
+    color: #ff4081;
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-      h2 {
-        font-size: 22px;
-        padding: 0 10px;
-      }
+.footer-author-name {
+    font-family: 'Pacifico', cursive !important; /* !important দিলে এটি সবকিছুর উপরে প্রাধান্য পাবে */
+    font-size: 20px !important;  /* পরীক্ষা করার জন্য আপাতত ৩০ পিক্সেল দিয়ে দেখুন */
+    color: #ff4081 !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+}
 
-      #resultImage {
-        width: 130px;
-      }
-
-      #typeEffect {
-        font-size: 14px;
-        padding: 0 10px;
-      }
-
-      #mainContainer, #resultContainer, #heartEffectContainer {
-        padding-top: 40px;
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      footer {
-        font-size: 14px;
-        flex-direction: column;
-        text-align: center;
-        gap: 8px;
-        padding: 12px 15px;
-      }
-
-      footer > div {
-        justify-content: center;
-        flex-direction: column;
-        display: flex;
-        align-items: center;
-      }
-
-      .follow-msg {
-        margin-left: 0;
-        margin-bottom: 5px;
-        font-size: 12px;
-      }
-
-      #instaBtn img {
-        width: 24px;
-        height: 24px;
-      }
-    }
-
-    /* ===== Footer Control Area ===== */
-    .footer-top {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 1px;
-    }
-
-    .footer-text {
-      font-size: 18px;
-      color: #555;
-      margin-left: 20px;
-    }
-
-    .footer-instagram-icon {
-      width: 30px;
-      height: 30px;
-      padding-top: 5px;
-    }
-
-    .footer-bottom {
-      font-size: 13px;
-      color: #333;
-      max-width: 100%;
-      word-wrap: break-word;
-      text-align: left;
-
-      /* 👇 Desktop Position Control (manually adjust this) */
-      margin-right: 80px; /* 👈 Move 10px from left */
-      /* margin-right: 10px; */ /* 👈 OR use this instead to move from right */
-    }
-
-    @media (max-width: 600px) {
-      .footer-top, 
-      .footer-bottom {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 10px 0;
-      }
-
-      .footer-instagram-icon {
-        width: 22px;
-        height: 22px;
-      }
-
-      .footer-text {
-        font-size: 12px;
-      }
-
-      .footer-bottom {
-        font-size: 12px;
-        margin: 0 auto !important;   /* 👈 Center for mobile */
-        text-align: center !important;
-      }
-    }
+/* --- Main Content --- */
+#mainContent {
+    display: none;
+}
 
     .music-controls {
   position: fixed;

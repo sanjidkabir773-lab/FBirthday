@@ -1,3 +1,9 @@
+function enterSite() {
+  document.getElementById("popup").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+}
+
+
 // 🔑 পাসওয়ার্ড সেট করুন (এখানে '1234' দেওয়া আছে, আপনার ইচ্ছা মতো পরিবর্তন করুন)
 const CORRECT_NAME = "1";
 const CORRECT_PASSWORD = "1";

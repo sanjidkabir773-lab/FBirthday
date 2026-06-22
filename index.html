@@ -9,30 +9,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Satisfy&family=Allura&family=Parisienne&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css"/>
   </head>
+
   <body>
 
-    <footer>
-  <!-- Line 1 -->
-  <div class="footer-top">
-    <span class="footer-text">
-      For Source Code, Follow my Instagram & DM me
-    </span>
-    <button onclick="window.open('https://www.instagram.com/the_pirate_773/', '_blank')" 
-      style="background: transparent; border: none; cursor: pointer; padding: 0;">
-      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" 
-        class="footer-instagram-icon">
-    </button>
-  </div>
+ <div id="popup">
+  <div id="popupBox">
+    <h2>Welcome!</h2>
+    <p>Unauthorized copying or redistribuiton is strictly prohibited. Please respect the creator's work.</p>
 
-  <!-- Line 2 -->
-  <div class="footer-bottom">
-    © 2026 BirthdayProjects | Developed by
-    <a href="https://github.com/sanjidkabir773-lab" target="_blank" class="footer-author-name"
-       style="color: #e91e63; text-decoration: none; font-weight: bold;">
-      Maaz Deen Sanjid Kabir
-    </a>
+    <div style="margin-top: 20px; text-align: center;">
+      <p style="font-family: 'Dancing Script', cursive; font-size: 16px; color: #ff4081; font-weight: bold; margin-bottom: 5px;">
+        For Source Code, Follow my Instagram <br> & DM me
+      </p>
+      <button onclick="window.open('https://www.instagram.com/the_pirate_773/', '_blank')" 
+              style="background: transparent; border: none; cursor: pointer; padding: 0;">
+        <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 25px; height: 25px;">
+      </button>
+      <p style="font-family: 'Dancing Script', cursive; font-size: 14px; color: #ff4081; font-weight: bold; margin-top: 10px;">
+        © 2026 Birthday Projects | Developed by <br>
+        <a href="https://github.com/sanjidkabir773-lab" target="_blank" class="footer-author-name">Maaz Deen Sanjid Kabir</a>
+      </p>
+      <button onclick="enterSite()">OK</button>
+    </div>
   </div>
-</footer>
+</div>
+
 
     <div class="music-controls">
       <audio id="celebration-music" loop>
