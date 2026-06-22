@@ -160,7 +160,7 @@ button {
 }
 
 .container {
-  height: 31.25em;
+  height: 36.25em;
   width: 31.25em;
   position: absolute;
   transform: translate(-50%, -50%);
@@ -170,7 +170,7 @@ button {
 
 form {
   width: 23.75em;
-  height: 18.75em;
+  height: 23.75em;
   background-color: #ffffff;
   position: absolute;
   transform: translate(-50%, -50%);
@@ -504,5 +504,12 @@ form button {
     font-family: 'Satisfy', cursive; /* Google Fonts থেকে পাওয়া নাম */
     font-size: 16px;   /* ফন্টের আকার */
     color: #ff4081;    /* ফন্টের রং */
+    font-weight: bold; /* বোল্ড করার জন্য */
+}
+
+.welcome-text {
+    font-family: 'Satisfy', cursive; /* Google Fonts থেকে পাওয়া নাম */
+    font-size: 23px;   /* ফন্টের আকার */
+    color: #ffbf40;    /* ফন্টের রং */
     font-weight: bold; /* বোল্ড করার জন্য */
 }
