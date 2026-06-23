@@ -1,6 +1,21 @@
+// পপআপ ওপেন হওয়ার সাথে সাথেই টাইমার শুরু হবে
+const okButton = document.getElementById('okButton');
+let timeLeft = 2;
+
+const timer = setInterval(() => {
+    timeLeft--;
+    if (timeLeft > 0) {
+        okButton.innerText = "OK (" + timeLeft + "s)";
+    } else {
+        clearInterval(timer);
+        okButton.innerText = "OK";
+        okButton.disabled = false; // 15 সেকেন্ড পর বাটনটি ক্লিক করার উপযোগী হবে
+    }
+}, 1000);
+
 function enterSite() {
-  document.getElementById("popup").style.display = "none";
-  document.getElementById("mainContent").style.display = "block";
+    document.getElementById('popup').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
 }
 
 

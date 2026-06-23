@@ -1,3 +1,11 @@
+.dancing { font-family: 'Dancing Script', cursive; }
+.pacifico { font-family: 'Pacifico', cursive; }
+.lobster { font-family: 'Lobster', cursive; }
+.great-vibes { font-family: 'Great Vibes', cursive; }
+.satisfy { font-family: 'Satisfy', cursive; }
+.cookie { font-family: 'Cookie', cursive; }
+
+
 /* মেইন রিসেট এবং গ্লোবাল স্টাইল */
 * {
   padding: 0;
@@ -20,6 +28,12 @@ body {
 
 
 /* --- Popup Structure --- */
+
+button:disabled {
+    background-color: #cccccc; /* বাটনটি নিষ্ক্রিয় থাকলে ধূসর দেখাবে */
+    cursor: not-allowed;
+}
+
 #popup {
     position: fixed;
     top: 0;
@@ -79,6 +93,12 @@ button {
     color: #ff4081 !important;
     font-weight: bold !important;
     text-decoration: none !important;
+}
+
+.welcome {
+    font-family: 'Pacifico', cursive !important;
+    font-size: 24px !important;
+    color: #ffbf40 !important;
 }
 
 /* --- Main Content --- */
