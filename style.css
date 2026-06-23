@@ -72,26 +72,9 @@ button {
     margin-bottom: 20px;
 }
 
-/* --- Footer text styles --- */
-.footer-text {
-    font-family: 'Dancing Script', cursive;
-    font-size: 16px;
-    color: #ff4081;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.footer-bottom {
-    font-family: 'Dancing Script', cursive;
-    font-size: 14px;
-    color: #ff4081;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
+/* --- text styles --- */
 .footer-author-name {
-    font-family: 'Pacifico', cursive !important; /* !important দিলে এটি সবকিছুর উপরে প্রাধান্য পাবে */
+    font-family: 'Great Vibes', cursive !important; /* !important দিলে এটি সবকিছুর উপরে প্রাধান্য পাবে */
     font-size: 20px !important;  /* পরীক্ষা করার জন্য আপাতত ৩০ পিক্সেল দিয়ে দেখুন */
     color: #ff4081 !important;
     font-weight: bold !important;
