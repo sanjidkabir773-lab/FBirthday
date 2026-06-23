@@ -89,7 +89,7 @@ button {
 /* --- text styles --- */
 .footer-author-name {
     font-family: 'Great Vibes', cursive !important; /* !important দিলে এটি সবকিছুর উপরে প্রাধান্য পাবে */
-    font-size: 20px !important;  /* পরীক্ষা করার জন্য আপাতত ৩০ পিক্সেল দিয়ে দেখুন */
+    font-size: 23px !important;  /* পরীক্ষা করার জন্য আপাতত ৩০ পিক্সেল দিয়ে দেখুন */
     color: #ff4081 !important;
     font-weight: bold !important;
     text-decoration: none !important;
@@ -97,7 +97,7 @@ button {
 
 .welcome {
     font-family: 'Pacifico', cursive !important;
-    font-size: 27px !important;
+    font-size: 30px !important;
     color: #ff4081 !important;
 }
 
