@@ -124,6 +124,11 @@ button {
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(255, 77, 109, 0.4);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* নিচের লাইনগুলো যোগ করুন */
+  display: flex;         /* বাটনটিকে ফ্লেক্স কন্টেইনার হিসেবে সেট করুন */
+  justify-content: center; /* আইকনটিকে অনুভূমিকভাবে মাঝখানে আনবে */
+  align-items: center;     /* আইকনটিকে উলম্বভাবে মাঝখানে আনবে */
 }
 
 .fab-music:hover {
@@ -392,76 +397,103 @@ form button {
   text-align: center;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
 .countdown-container {
-  background: rgba(0, 0, 0, 0.6);
+  /* ব্যাকগ্রাউন্ড পুরোপুরি স্বচ্ছ করা হয়েছে */
+  background: transparent; 
   padding: 20px 40px;
   border-radius: 50px;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* ব্যাকগ্রাউন্ড স্বচ্ছ হলে বর্ডার দরকার নেই, চাইলে মুছে ফেলতে পারেন */
+  border: none; 
+  display: inline-block;
+  text-align: center;
   margin-top: 20px;
 }
 
 .countdown-container h2 {
-  font-size: 20px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 32px; /* হেডিং সাইজ কিছুটা কম করা হয়েছে */
   margin-bottom: 10px;
-  color: #ffd166;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 #countdown {
-  font-size: 32px;
-  font-weight: bold;
+  font-family: 'Lobster', cursive;
+  font-size: 28px; /* মূল ফন্ট সাইজ ছোট করা হয়েছে */
+  font-weight: 400;
   letter-spacing: 2px;
+  color: #ffd166;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+
+
+/* গ্লোবাল ফন্ট সেটিং */
+/* Quicksand ফন্ট ঠিক করার জন্য */
+.card-slider, .project-card, .project-card p {
+    font-family: 'Allura', cursive !important;
+}
+
+/* Lobster ফন্ট ঠিক করার জন্য */
+.project-card h3 {
+    font-family: 'Lobster', cursive !important;
 }
 
 .card-slider {
   display: flex;
   overflow-x: auto;
-  gap: 25px;
+  gap: 20px; /* গ্যাপ কিছুটা কমানো হয়েছে */
   width: 90%;
-  max-width: 1200px;
-  padding: 30px 10px;
-  margin-bottom: 40px;
+  max-width: 1000px; /* স্লাইডারের ম্যাক্স উইথ কমানো হয়েছে */
+  padding: 20px 10px;
+  margin: 0 auto 40px auto; /* সেন্টার করার জন্য */
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* মোবাইলে স্মুথ স্লাইডিংয়ের জন্য */
 }
 
-.card-slider::-webkit-scrollbar { height: 8px; }
+.card-slider::-webkit-scrollbar { height: 6px; }
 .card-slider::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
 }
 
 .project-card {
-  min-width: 280px;
-  max-width: 280px;
-  height: 350px;
-  background: rgba(255, 255, 255, 0.1);
+  min-width: 220px; /* কার্ডের উইথ কমানো হয়েছে */
+  max-width: 220px;
+  height: 280px;    /* উচ্চতা কমানো হয়েছে */
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 15px;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: transform 0.3s ease, background 0.3s ease;
   text-decoration: none;
   color: white;
 }
 
 .project-card:hover {
-  transform: translateY(-15px) scale(1.02);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4);
+  transform: translateY(-10px) scale(1.02);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
   border-color: #ff4757;
 }
 
-.card-icon { font-size: 50px; margin-bottom: 15px; }
-.project-card h3 { font-size: 22px; margin-bottom: 10px; }
-.project-card p { font-size: 14px; color: #ddd; text-align: center; }
+.card-icon { font-size: 40px; margin-bottom: 10px; }
+.project-card h3 { font-size: 18px; margin-bottom: 8px; }
+.project-card p { font-size: 13px; color: #eee; text-align: center; }
 
 @media screen and (max-width: 500px) {
-  .container { font-size: 14px; }
+  .project-card { 
+      min-width: 200px; 
+      height: 250px; 
+  }
 }
 
 

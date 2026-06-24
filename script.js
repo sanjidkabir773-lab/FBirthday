@@ -23,8 +23,38 @@ function enterSite() {
 const CORRECT_NAME = "1";
 const CORRECT_PASSWORD = "1";
 
-// 📅 জন্মদিনের তারিখ সেট করুন (Year-Month-Day Hour:Minute:Second)
-const TARGET_DATE = new Date("Sep 17, 2026 00:00:00").getTime();
+// ১. টার্গেট তারিখ সেট করুন
+const targetDate = new Date("2026-09-17T00:00:00").getTime();
+
+// ২. সময় আপডেট করার ফাংশন
+function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    // সময় হিসাব (দিন, ঘণ্টা, মিনিট, সেকেন্ড)
+    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // ৩. HTML-এ প্রদর্শন (০ যোগ করার লজিকসহ, যেমন: 05s)
+    const countdownElement = document.getElementById("countdown");
+    if (countdownElement) {
+        countdownElement.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+    }
+
+    // ৪. সময় শেষ হলে
+    if (distance < 0) {
+        clearInterval(timerInterval);
+        countdownElement.innerHTML = "Happy Birthday, Dear 🎉";
+    }
+}
+
+// প্রতি সেকেন্ডে ফাংশনটি কল করা
+const timerInterval = setInterval(updateCountdown, 1000);
+
+// প্রথমবার পেজ লোড হওয়ার সাথে সাথে রান করার জন্য
+updateCountdown();
 
 // পান্ডা অ্যানিমেশনের জন্য রেফারেন্সসমূহ
 let usernameRef = document.getElementById("username");
@@ -94,23 +124,6 @@ function unlockWeb(event) {
     }
 }
 
-// 📅 কাউন্টডাউন টাইমার ফাংশন
-const countdownInterval = setInterval(function() {
-    const now = new Date().getTime();
-    const difference = TARGET_DATE - now;
-
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-
-    if (difference < 0) {
-        clearInterval(countdownInterval);
-        document.getElementById("countdown").innerHTML = "শুভ জন্মদিন! 🎂🎉";
-    }
-}, 1000);
 
 // 🎵 ব্যাকগ্রাউন্ড মিউজিক কন্ট্রোল ফাংশ
 let isPlaying = false;
