@@ -1,6 +1,6 @@
 // পপআপ ওপেন হওয়ার সাথে সাথেই টাইমার শুরু হবে
 const okButton = document.getElementById('okButton');
-let timeLeft = 2;
+let timeLeft = 10;
 
 const timer = setInterval(() => {
     timeLeft--;
@@ -9,7 +9,7 @@ const timer = setInterval(() => {
     } else {
         clearInterval(timer);
         okButton.innerText = "OK";
-        okButton.disabled = false; // 15 সেকেন্ড পর বাটনটি ক্লিক করার উপযোগী হবে
+        okButton.disabled = false; // 10 সেকেন্ড পর বাটনটি ক্লিক করার উপযোগী হবে
     }
 }, 1000);
 
@@ -20,8 +20,8 @@ function enterSite() {
 
 
 // 🔑 পাসওয়ার্ড সেট করুন (এখানে '1234' দেওয়া আছে, আপনার ইচ্ছা মতো পরিবর্তন করুন)
-const CORRECT_NAME = "1";
-const CORRECT_PASSWORD = "1";
+const CORRECT_NAME = "zayden";
+const CORRECT_PASSWORD = "7739";
 
 // ১. টার্গেট তারিখ সেট করুন
 const targetDate = new Date("2026-09-17T00:00:00").getTime();

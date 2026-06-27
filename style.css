@@ -1,9 +1,34 @@
+/* সব ফন্ট একসাথে শুরুতে একবার ইম্পোর্ট করা হলো */
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Cookie&family=Dancing+Script&family=Great+Vibes&family=Lobster&family=Pacifico&family=Poppins:wght@400;600&family=Satisfy&display=swap');
+
+/* গ্লোবাল রিসেট - এখানে font-family সরিয়ে দিয়েছি */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif; /* বডিতে ডিফল্ট ফন্ট সেট করা হলো */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('pastel-sunset-sky.jpg') no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* তোমার আগের ক্লাসগুলো এখন ঠিকঠাক কাজ করবে */
 .dancing { font-family: 'Dancing Script', cursive; }
 .pacifico { font-family: 'Pacifico', cursive; }
 .lobster { font-family: 'Lobster', cursive; }
 .great-vibes { font-family: 'Great Vibes', cursive; }
 .satisfy { font-family: 'Satisfy', cursive; }
 .cookie { font-family: 'Cookie', cursive; }
+
+/* ... (তোমার বাকি কোড যেমন আছে তেমনই থাকবে) ... */
 
 
 /* মেইন রিসেট এবং গ্লোবাল স্টাইল */
@@ -433,7 +458,7 @@ form button {
 /* গ্লোবাল ফন্ট সেটিং */
 /* Quicksand ফন্ট ঠিক করার জন্য */
 .card-slider, .project-card, .project-card p {
-    font-family: 'Allura', cursive !important;
+    font-family: 'Comic Sans MS', cursive !important;
 }
 
 /* Lobster ফন্ট ঠিক করার জন্য */
